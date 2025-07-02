@@ -401,8 +401,9 @@ int? _parseInt(dynamic jsonValue) {
   if (jsonValue is int) return jsonValue;
   if (jsonValue is String) return int.tryParse(jsonValue);
   if (jsonValue is Map) {
-    if (jsonValue.containsKey('\$numberInt'))
+    if (jsonValue.containsKey('\$numberInt')) {
       return int.tryParse(jsonValue['\$numberInt'].toString());
+    }
   }
   return null;
 }

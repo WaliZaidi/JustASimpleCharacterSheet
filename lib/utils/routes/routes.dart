@@ -1,8 +1,8 @@
-import 'package:first_iteration/screens/characters/characters_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod/riverpod.dart';
 
+import '../../screens/characters/characters_view.dart';
 import 'route_names.dart';
 
 final container = ProviderContainer();

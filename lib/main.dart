@@ -23,12 +23,13 @@
 // }
 
 // lib/main.dart
-import 'package:first_iteration/widgets/core/bottom_pagination_bar.dart';
+
 import 'package:flutter/material.dart';
 import 'models/character_model.dart';
 import 'screens/combat/combat_view.dart';
 import 'screens/profile/profile_view.dart';
 import 'screens/skills/skills_feature_view.dart';
+import 'widgets/core/bottom_pagination_bar.dart';
 
 void main() {
   runApp(const DndSheetApp());
@@ -98,6 +99,7 @@ class _CharacterSheetWrapperState extends State<CharacterSheetWrapper> {
     ];
   }
 
+  // ignore: unused_element
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

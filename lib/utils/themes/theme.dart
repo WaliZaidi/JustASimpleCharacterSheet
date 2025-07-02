@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 // A centralized class for all theme-related constants and definitions.
 class AppTheme {
+  // ignore: prefer_typing_uninitialized_variables
   static var borderColor;
-
 
   // Private constructor to prevent instantiation.
   AppTheme._();
@@ -20,7 +20,7 @@ class AppTheme {
 
   /// The light, parchment-like color for headers and important text.
   static const Color primaryText = Color(0xFFE0D5C4);
-  
+
   /// The pure white color for values and secondary text.
   static const Color secondaryText = Color(0xFFFFFFFF);
 
@@ -29,7 +29,6 @@ class AppTheme {
 
   /// An accent color, seen in the 'on' state of the inspiration switch.
   static const Color accent = Color(0xFF8A6DC2);
-
 
   // --- FONT FAMILies ---
   static final String _headerFontFamily = GoogleFonts.cinzel().fontFamily!;
@@ -47,14 +46,14 @@ class AppTheme {
     // --- COLOR SCHEME ---
     // The modern way to define theme colors.
     colorScheme: const ColorScheme.dark(
-      primary: primaryText,       // Main interactive color (e.g., text headers)
-      secondary: accent,          // Accent color (e.g., for switches, FABs)
-      surface: cardBackground,    // Color of component surfaces like Cards
-      background: background,     // Scaffold background
-      onPrimary: background,      // Text/icon color on top of primary color
+      primary: primaryText, // Main interactive color (e.g., text headers)
+      secondary: accent, // Accent color (e.g., for switches, FABs)
+      surface: cardBackground, // Color of component surfaces like Cards
+      background: background, // Scaffold background
+      onPrimary: background, // Text/icon color on top of primary color
       onSecondary: secondaryText, // Text/icon color on top of secondary color
-      onSurface: secondaryText,   // Text/icon color on top of surface color
-      onBackground: primaryText,  // Text/icon color on top of background color
+      onSurface: secondaryText, // Text/icon color on top of surface color
+      onBackground: primaryText, // Text/icon color on top of background color
       error: Colors.redAccent,
       onError: secondaryText,
     ),
@@ -63,9 +62,15 @@ class AppTheme {
     // Defines default text styles. We use Cinzel for headers and Lato for body.
     textTheme: GoogleFonts.latoTextTheme(ThemeData.dark().textTheme).copyWith(
       // For character name: Alistair Thorne
-      displayMedium: TextStyle(fontFamily: _headerFontFamily, color: primaryText, fontWeight: FontWeight.bold),
+      displayMedium: TextStyle(
+          fontFamily: _headerFontFamily,
+          color: primaryText,
+          fontWeight: FontWeight.bold),
       // For section titles: Ability Scores, Saving Throws & Skills
-      headlineSmall: TextStyle(fontFamily: _headerFontFamily, color: primaryText, fontWeight: FontWeight.bold),
+      headlineSmall: TextStyle(
+          fontFamily: _headerFontFamily,
+          color: primaryText,
+          fontWeight: FontWeight.bold),
       // For general text and values in cards
       bodyLarge: const TextStyle(color: secondaryText, fontSize: 16),
       // For skill names and other labels
@@ -73,7 +78,7 @@ class AppTheme {
       // For bottom navigation bar labels
       bodySmall: const TextStyle(color: primaryText, fontSize: 12),
     ),
-    
+
     // --- COMPONENT THEMES ---
 
     appBarTheme: AppBarTheme(
@@ -104,7 +109,7 @@ class AppTheme {
       thickness: 1,
       space: 1,
     ),
-    
+
     // Style for the inspiration toggle switch
     switchTheme: SwitchThemeData(
       thumbColor: MaterialStateProperty.resolveWith<Color?>((states) {
@@ -131,7 +136,7 @@ class AppTheme {
       showSelectedLabels: true,
       showUnselectedLabels: true,
     ),
-    
+
     // Default style for all icons
     iconTheme: const IconThemeData(
       color: secondaryText,
