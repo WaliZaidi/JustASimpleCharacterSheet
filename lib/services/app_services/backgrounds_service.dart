@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../../models/background_model.dart';
+
 class BackgroundService {
   // Singleton pattern setup
   static final BackgroundService _instance = BackgroundService._internal();
