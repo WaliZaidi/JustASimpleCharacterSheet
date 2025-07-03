@@ -67,8 +67,8 @@ class Spell {
       id: json["_id"] is Map ? json["_id"]["\$oid"] : json["_id"],
       name: json["name"],
       source: json["source"],
-      page: _parseInt(json["page"])!,
-      level: _parseInt(json["level"])!,
+      page: _parseInt(json["page"]) ?? 0,
+      level: _parseInt(json["level"]) ?? 0,
       school: json["school"],
       time:
           List<SpellTime>.from(json["time"].map((x) => SpellTime.fromJson(x))),
@@ -106,10 +106,19 @@ class Spell {
           ? null
           : List<SpellImage>.from(
               json["images"]!.map((x) => SpellImage.fromJson(x))),
-      classes: json["classes"] == null
-          ? null
-          : List<SpellClass>.from(
-              json["classes"]!.map((x) => SpellClass.fromJson(x))),
+      classes: (json["classes"] != null &&
+              json["classes"] is Map &&
+              json["classes"]["fromClassList"] is List)
+          ? List<SpellClass>.from(
+              json["classes"]["fromClassList"].map((x) {
+                if (x is Map<String, dynamic>) {
+                  return SpellClass.fromJson(x);
+                } else {
+                  return SpellClass(name: "Unknown", source: "Unknown");
+                }
+              }),
+            )
+          : null,
     );
   }
 }
@@ -163,16 +172,20 @@ class StringEntry extends Entry {
   StringEntry(this.text);
 }
 
+// REPLACE the old ListEntry class with this one
 class ListEntry extends Entry {
   final String? style;
-  final List<ListItem> items;
+  final List<String> items; // Changed from List<ListItem>
+
   ListEntry({this.style, required this.items});
 
-  factory ListEntry.fromJson(Map<String, dynamic> json) => ListEntry(
-        style: json["style"],
-        items:
-            List<ListItem>.from(json["items"].map((x) => ListItem.fromJson(x))),
-      );
+  factory ListEntry.fromJson(Map<String, dynamic> json) {
+    return ListEntry(
+      style: json["style"],
+      // Correctly parse the list of strings
+      items: List<String>.from(json["items"].map((x) => x.toString())),
+    );
+  }
 }
 
 class TableEntry extends Entry {
@@ -191,8 +204,8 @@ class TableEntry extends Entry {
         caption: json["caption"],
         colLabels: List<String>.from(json["colLabels"].map((x) => x)),
         colStyles: List<String>.from(json["colStyles"].map((x) => x)),
-        rows: List<List<String>>.from(
-            json["rows"].map((x) => List<String>.from(x.map((y) => y)))),
+        rows: List<List<String>>.from(json["rows"]
+            .map((x) => List<String>.from(x.map((y) => y.toString())))),
       );
 }
 
@@ -324,10 +337,17 @@ class SpellTime {
 
   SpellTime({required this.number, required this.unit});
 
-  factory SpellTime.fromJson(Map<String, dynamic> json) => SpellTime(
-        number: _parseInt(json["number"])!,
-        unit: json["unit"],
-      );
+  factory SpellTime.fromJson(Map<String, dynamic> json) {
+    final parsed = _parseInt(json["number"] ?? 0);
+    if (parsed == null) {
+      throw FormatException("Invalid number in SpellTime: ${json["number"]}");
+    }
+
+    return SpellTime(
+      number: parsed,
+      unit: json["unit"],
+    );
+  }
 }
 
 // --- Models for Enriched Data ---

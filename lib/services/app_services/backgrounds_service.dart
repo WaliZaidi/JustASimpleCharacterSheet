@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,7 +18,7 @@ class BackgroundService {
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
-  // Fetches data from your API
+  // Fetches data from mongoDB
   Future<void> loadBackgrounds() async {
     if (_isLoaded) return;
 
@@ -35,8 +36,7 @@ class BackgroundService {
         throw Exception('Failed to load backgrounds: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('Error loading backgrounds: $e');
-      // Handle the error appropriately in a real app (e.g., show a snackbar)
+      debugPrint('$e');
     }
   }
 }

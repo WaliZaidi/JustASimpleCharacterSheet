@@ -3,5 +3,6 @@ class RouteNames {
 
   RouteNames._();
 
-  final characterList = '/characterList';
+  final String characterList = '/characterList';
+  final String spellsList = '/spellsList';
 }

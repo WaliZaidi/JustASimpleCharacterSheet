@@ -16,7 +16,7 @@ class BottomPaginationBar extends StatelessWidget {
           routeName: RouteNames.instance.characterList,
           icon: Icons.person_2_outlined,
           activeIcon: Icons.person_2_rounded,
-          label: AppStrings.instance.characterList)
+          label: AppStrings.instance.characterList),
     ];
 
     final theme = Theme.of(context);
