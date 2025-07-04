@@ -1,5 +1,6 @@
 // lib/views/spell_list_view.dart
 
+import 'package:dnd_app_v2/screens/spells/widgets/spell_list_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -69,15 +70,7 @@ class SpellListView extends ConsumerWidget {
         itemCount: viewModel.spells.length,
         itemBuilder: (context, index) {
           final Spell spell = viewModel.spells[index];
-          return ListTile(
-            title: Text(spell.name),
-            subtitle: Text('Level ${spell.level} ${spell.school}'),
-            trailing: Text(spell.source,
-                style: Theme.of(context).textTheme.bodySmall),
-            onTap: () {
-              //todo: Lets add something here more
-            },
-          );
+          return SpellListCard(spell: spell);
         },
       ),
     );

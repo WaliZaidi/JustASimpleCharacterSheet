@@ -13,7 +13,7 @@ class AppTheme {
   // These colors are sampled directly from the provided image.
 
   /// The main dark background color of the app.
-  static const Color background = Color(0xFF1E1C1B);
+  static const Color background = Color.fromARGB(255, 30, 28, 27);
 
   /// The slightly lighter background color for cards and containers.
   static const Color cardBackground = Color(0xFF2A2827);
