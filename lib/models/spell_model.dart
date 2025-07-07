@@ -1,19 +1,20 @@
+//! NYAN
 import 'dart:convert';
 
 // --- Top-Level Parsing Functions ---
 
-// Parses a single spell document from a JSON string
-Spell spellFromJson(String str) => Spell.fromJson(json.decode(str));
+/// Parses a list of spell documents from a direct JSON array `[...]`.
+/// This is the correct format for your API response.
+List<Spell> spellListFromJson(String str) => List<Spell>.from(
+    json.decode(str).map((x) => Spell.fromJson(x as Map<String, dynamic>)));
 
-// Parses a list of spell documents (e.g., from a find() query)
-List<Spell> spellListFromJson(String str) =>
-    List<Spell>.from(json.decode(str).map((x) => Spell.fromJson(x)));
+/// Parses a single spell document.
+Spell spellFromJson(String str) => Spell.fromJson(json.decode(str));
 
 // --- Main Spell Class ---
 
 class Spell {
-  // Core Fields
-  final String id;
+  final String? id; // Nullable to be robust
   final String name;
   final String source;
   final int page;
@@ -23,9 +24,7 @@ class Spell {
   final SpellRange range;
   final Components components;
   final List<DurationInfo> duration;
-  final List<Entry> entries; // Uses the powerful sealed class for type safety
-
-  // Optional & Merged Fields
+  final List<Entry> entries;
   final List<EntriesHigherLevel>? entriesHigherLevel;
   final List<String>? damageInflict;
   final List<String>? conditionInflict;
@@ -34,11 +33,11 @@ class Spell {
   final List<String>? areaTags;
   final List<String>? reprintedAs;
   final bool? hasFluffImages;
-  final List<SpellImage>? images; // From fluff files
-  final List<SpellClass>? classes; // From sources.json
+  final List<SpellImage>? images;
+  final List<SpellClass>? classes;
 
   Spell({
-    required this.id,
+    this.id,
     required this.name,
     required this.source,
     required this.page,
@@ -63,8 +62,9 @@ class Spell {
 
   factory Spell.fromJson(Map<String, dynamic> json) {
     return Spell(
-      // --- Required Fields ---
-      id: json["_id"] is Map ? json["_id"]["\$oid"] : json["_id"],
+      id: json["_id"] == null
+          ? null
+          : (json["_id"] is Map ? json["_id"]["\$oid"] : json["_id"]),
       name: json["name"],
       source: json["source"],
       page: _parseInt(json["page"]) ?? 0,
@@ -77,8 +77,6 @@ class Spell {
       duration: List<DurationInfo>.from(
           json["duration"].map((x) => DurationInfo.fromJson(x))),
       entries: _parseEntries(json["entries"]),
-
-      // --- Optional & Merged Fields ---
       entriesHigherLevel: json["entriesHigherLevel"] == null
           ? null
           : List<EntriesHigherLevel>.from(json["entriesHigherLevel"]!
@@ -106,24 +104,30 @@ class Spell {
           ? null
           : List<SpellImage>.from(
               json["images"]!.map((x) => SpellImage.fromJson(x))),
-      classes: (json["classes"] != null &&
-              json["classes"] is Map &&
-              json["classes"]["fromClassList"] is List)
-          ? List<SpellClass>.from(
-              json["classes"]["fromClassList"].map((x) {
-                if (x is Map<String, dynamic>) {
-                  return SpellClass.fromJson(x);
-                } else {
-                  return SpellClass(name: "Unknown", source: "Unknown");
-                }
-              }),
-            )
-          : null,
+      classes: _parseSpellClasses(json['classes']),
     );
   }
 }
 
 // --- Helper Functions for Parsing ---
+
+/// Parses the 'classes' field, which can have inconsistent JSON structures.
+List<SpellClass>? _parseSpellClasses(dynamic rawJson) {
+  if (rawJson == null) {
+    return null;
+  }
+  List<dynamic> classListJson;
+  if (rawJson is Map<String, dynamic> && rawJson.containsKey('fromClassList')) {
+    classListJson = rawJson['fromClassList'] as List<dynamic>;
+  } else if (rawJson is List) {
+    classListJson = rawJson;
+  } else {
+    return null;
+  }
+  return classListJson
+      .map((item) => SpellClass.fromJson(item as Map<String, dynamic>))
+      .toList();
+}
 
 int? _parseInt(dynamic jsonValue) {
   if (jsonValue == null) return null;
@@ -140,7 +144,6 @@ int? _parseInt(dynamic jsonValue) {
   return null;
 }
 
-// Parses the polymorphic `entries` array into a type-safe list.
 List<Entry> _parseEntries(List<dynamic>? entriesList) {
   if (entriesList == null) return [];
   return entriesList.map((e) {
@@ -153,18 +156,17 @@ List<Entry> _parseEntries(List<dynamic>? entriesList) {
           return ListEntry.fromJson(e);
         case 'table':
           return TableEntry.fromJson(e);
+        case 'entries':
+          return MapEntry(e);
         default:
-          // Fallback for any other map types, preserving the data.
           return MapEntry(e);
       }
     }
-    // Fallback for any other unexpected data types.
     return MapEntry({'unparsed': e.toString()});
   }).toList();
 }
 
 // --- Sealed Class for Polymorphic "entries" Field ---
-
 sealed class Entry {}
 
 class StringEntry extends Entry {
@@ -172,17 +174,15 @@ class StringEntry extends Entry {
   StringEntry(this.text);
 }
 
-// REPLACE the old ListEntry class with this one
 class ListEntry extends Entry {
   final String? style;
-  final List<String> items; // Changed from List<ListItem>
+  final List<String> items;
 
   ListEntry({this.style, required this.items});
 
   factory ListEntry.fromJson(Map<String, dynamic> json) {
     return ListEntry(
       style: json["style"],
-      // Correctly parse the list of strings
       items: List<String>.from(json["items"].map((x) => x.toString())),
     );
   }
@@ -191,25 +191,26 @@ class ListEntry extends Entry {
 class TableEntry extends Entry {
   final String? caption;
   final List<String> colLabels;
-  final List<String> colStyles;
-  final List<List<String>> rows;
+  final List<String>? colStyles;
+  final List<List<dynamic>> rows;
   TableEntry({
     this.caption,
     required this.colLabels,
-    required this.colStyles,
+    this.colStyles,
     required this.rows,
   });
 
   factory TableEntry.fromJson(Map<String, dynamic> json) => TableEntry(
         caption: json["caption"],
         colLabels: List<String>.from(json["colLabels"].map((x) => x)),
-        colStyles: List<String>.from(json["colStyles"].map((x) => x)),
-        rows: List<List<String>>.from(json["rows"]
-            .map((x) => List<String>.from(x.map((y) => y.toString())))),
+        colStyles: json["colStyles"] == null
+            ? null
+            : List<String>.from(json["colStyles"].map((x) => x)),
+        rows: List<List<dynamic>>.from(
+            json["rows"].map((x) => List<dynamic>.from(x.map((y) => y)))),
       );
 }
 
-// A fallback entry type for any unhandled map structures
 class MapEntry extends Entry {
   final Map<String, dynamic> data;
   MapEntry(this.data);
@@ -217,23 +218,10 @@ class MapEntry extends Entry {
 
 // --- Sub-Models for Nested Objects ---
 
-class ListItem {
-  final String type;
-  final String name;
-  final List<String> entries;
-  ListItem({required this.type, required this.name, required this.entries});
-
-  factory ListItem.fromJson(Map<String, dynamic> json) => ListItem(
-        type: json["type"],
-        name: json["name"],
-        entries: List<String>.from(json["entries"].map((x) => x)),
-      );
-}
-
 class Components {
   final bool? v;
   final bool? s;
-  final MaterialComponent? m; // Can be a string or object
+  final MaterialComponent? m;
 
   Components({this.v, this.s, this.m});
 
@@ -253,13 +241,31 @@ class Components {
 class MaterialComponent {
   final String text;
   final int? cost;
-  MaterialComponent({required this.text, this.cost});
+  final bool? consume;
 
-  factory MaterialComponent.fromJson(Map<String, dynamic> json) =>
-      MaterialComponent(
-        text: json["text"],
-        cost: _parseInt(json["cost"]),
-      );
+  MaterialComponent({required this.text, this.cost, this.consume});
+
+  factory MaterialComponent.fromJson(Map<String, dynamic> json) {
+    final dynamic consumeValue = json['consume'];
+    bool finalConsumeValue;
+
+    if (consumeValue is bool) {
+      // If it's already a boolean, use it directly.
+      finalConsumeValue = consumeValue;
+    } else if (consumeValue is String) {
+      // If it's a string, check if it's 'true'.
+      finalConsumeValue = consumeValue.toLowerCase() == 'true';
+    } else {
+      // If it's null or another type, default to true as in your original code.
+      finalConsumeValue = true;
+    }
+
+    return MaterialComponent(
+      text: json["text"],
+      cost: _parseInt(json["cost"]),
+      consume: finalConsumeValue,
+    );
+  }
 }
 
 class DurationInfo {
@@ -342,15 +348,9 @@ class SpellTime {
     if (parsed == null) {
       throw FormatException("Invalid number in SpellTime: ${json["number"]}");
     }
-
-    return SpellTime(
-      number: parsed,
-      unit: json["unit"],
-    );
+    return SpellTime(number: parsed, unit: json["unit"]);
   }
 }
-
-// --- Models for Enriched Data ---
 
 class SpellImage {
   final String type;
@@ -391,4 +391,138 @@ class SpellClass {
         source: json["source"],
         definedInSource: json["definedInSource"],
       );
+}
+
+extension SpellToJson on Spell {
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "name": name,
+        "source": source,
+        "page": page,
+        "level": level,
+        "school": school,
+        "time": time.map((x) => x.toJson()).toList(),
+        "range": range.toJson(),
+        "components": components.toJson(),
+        "duration": duration.map((x) => x.toJson()).toList(),
+        "entries": entries.map((x) => entryToJson(x)).toList(),
+        "entriesHigherLevel":
+            entriesHigherLevel?.map((x) => x.toJson()).toList(),
+        "damageInflict": damageInflict,
+        "conditionInflict": conditionInflict,
+        "savingThrow": savingThrow,
+        "miscTags": miscTags,
+        "areaTags": areaTags,
+        "reprintedAs": reprintedAs,
+        "hasFluffImages": hasFluffImages,
+        "images": images?.map((x) => x.toJson()).toList(),
+        "classes": classes?.map((x) => x.toJson()).toList(),
+      };
+}
+
+dynamic entryToJson(Entry entry) {
+  if (entry is StringEntry) {
+    return entry.text; // Now valid to return a String
+  } else if (entry is ListEntry) {
+    return {
+      "type": "list",
+      "style": entry.style,
+      "items": entry.items,
+    };
+  } else if (entry is TableEntry) {
+    return {
+      "type": "table",
+      "caption": entry.caption,
+      "colLabels": entry.colLabels,
+      "colStyles": entry.colStyles,
+      "rows": entry.rows,
+    };
+  } else if (entry is MapEntry) {
+    return entry.data;
+  } else {
+    return {'unparsed': entry.toString()};
+  }
+}
+
+extension SpellTimeToJson on SpellTime {
+  Map<String, dynamic> toJson() => {
+        "number": number,
+        "unit": unit,
+      };
+}
+
+extension SpellRangeToJson on SpellRange {
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "distance": distance?.toJson(),
+      };
+}
+
+extension DistanceToJson on Distance {
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "amount": amount,
+      };
+}
+
+extension ComponentsToJson on Components {
+  Map<String, dynamic> toJson() => {
+        "v": v,
+        "s": s,
+        "m": m?.toJson(),
+      };
+}
+
+extension MaterialComponentToJson on MaterialComponent {
+  Map<String, dynamic> toJson() => {
+        "text": text,
+        "cost": cost,
+      };
+}
+
+extension DurationInfoToJson on DurationInfo {
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "duration": duration?.toJson(),
+        "concentration": concentration,
+      };
+}
+
+extension DurationDetailToJson on DurationDetail {
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "amount": amount,
+      };
+}
+
+extension EntriesHigherLevelToJson on EntriesHigherLevel {
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "name": name,
+        "entries": entries,
+      };
+}
+
+extension SpellImageToJson on SpellImage {
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "href": href.toJson(),
+        "credit": credit,
+        "title": title,
+      };
+}
+
+extension ImageHrefToJson on ImageHref {
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "path": path,
+      };
+}
+
+extension SpellClassToJson on SpellClass {
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "source": source,
+        "definedInSource": definedInSource,
+      };
 }

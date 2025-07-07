@@ -15,6 +15,18 @@ class SpellListViewModel extends BaseViewModel {
 
   final Map<String, dynamic> _activeFilters = {};
 
+  bool isSearchVisible = false;
+
+  void toggleSearchVisibility() {
+    isSearchVisible = !isSearchVisible;
+    notifyListeners();
+  }
+
+  void hideSearch() {
+    isSearchVisible = false;
+    notifyListeners();
+  }
+
   List<Spell> get filteredSpells {
     List<Spell> spells = _allSpells;
 
@@ -35,6 +47,25 @@ class SpellListViewModel extends BaseViewModel {
           .toList();
     }
 
+    if (_activeFilters.isNotEmpty) {
+      spells = spells.where((spell) {
+        bool passesLevelFilter = !_activeFilters.containsKey('level') ||
+            spell.level == _activeFilters['level'];
+        bool passesSchoolFilter = !_activeFilters.containsKey('school') ||
+            spell.school == _activeFilters['school'];
+
+        bool passesClassFilter = true; // Default to true
+        if (_activeFilters.containsKey('class')) {
+          passesClassFilter = spell.classes?.any(
+                  (spellClass) => spellClass.name == _activeFilters['class']) ??
+              false;
+        }
+        // -------------------------------------
+
+        return passesLevelFilter && passesSchoolFilter && passesClassFilter;
+      }).toList();
+    }
+
     return spells;
   }
 
@@ -47,6 +78,20 @@ class SpellListViewModel extends BaseViewModel {
 
   List<String> get availableSchools =>
       _allSpells.map((s) => s.school).toSet().toList()..sort();
+
+  List<String> get availableClasses {
+    final allClassNames = <String>{};
+
+    for (final spell in _allSpells) {
+      if (spell.classes != null) {
+        for (final spellClass in spell.classes!) {
+          allClassNames.add(spellClass.name);
+        }
+      }
+    }
+
+    return allClassNames.toList()..sort();
+  }
 
   void search(String query) {
     _searchQuery = query;
