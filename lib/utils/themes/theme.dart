@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
+  // ignore: prefer_typing_uninitialized_variables
   static var borderColor;
 
   AppTheme._();
@@ -20,7 +21,7 @@ class AppTheme {
 
   static final String _headerFontFamily = GoogleFonts.cinzel().fontFamily!;
 
-  static final String _bodyFontFamily = GoogleFonts.lato().fontFamily!;
+  // static final String _bodyFontFamily = GoogleFonts.lato().fontFamily!;
 
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,

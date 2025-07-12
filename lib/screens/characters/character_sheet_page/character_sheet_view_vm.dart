@@ -110,13 +110,10 @@ class CharacterSheetViewModel extends BaseViewModel {
   }
 
   Future<void> addFeature(ClassFeature newFeature) async {
-    print(character.features.length);
-
     final updatedFeatures = List<ClassFeature>.from(character.features)
       ..add(newFeature);
     character.features = updatedFeatures;
-    print(newFeature.toJson());
-    print(character.features.length);
+
     notifyListeners();
   }
 

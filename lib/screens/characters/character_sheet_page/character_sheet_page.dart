@@ -305,8 +305,7 @@ class _CoreTabState extends State<_CoreTab> {
 class _FeaturesTab extends ConsumerStatefulWidget {
   final CharacterSheetState controller;
   final CharacterSheetViewModel viewModel;
-  const _FeaturesTab(
-      {required this.controller, required this.viewModel, super.key});
+  const _FeaturesTab({required this.controller, required this.viewModel});
 
   @override
   ConsumerState<_FeaturesTab> createState() => _FeaturesTabState();
@@ -330,8 +329,7 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
       itemCount: viewModel.character.features.length,
       itemBuilder: (context, index) {
         final feature = viewModel.character.features[index];
-        print('on build method : ${viewModel.character.features.length}');
-        print(feature.toJson());
+
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
           child: ExpansionTile(
@@ -360,8 +358,7 @@ class _FeaturesTabState extends ConsumerState<_FeaturesTab> {
 class _BiographyTab extends ConsumerStatefulWidget {
   final CharacterSheetState controller;
   final CharacterSheetViewModel viewModel;
-  const _BiographyTab(
-      {required this.controller, required this.viewModel, super.key});
+  const _BiographyTab({required this.controller, required this.viewModel});
 
   @override
   ConsumerState<_BiographyTab> createState() => _BiographyTabState();
@@ -576,6 +573,7 @@ void _showAddFeatureDialog(
                   level: int.parse(levelController.text),
                   entries: [StringEntry(descriptionController.text)],
                   description: descriptionController.text));
+              // ignore: use_build_context_synchronously
               Navigator.pop(context);
             },
             child: const Text('Add'),

@@ -26,5 +26,20 @@ final routerConfiuration = Provider<GoRouter>((ref) {
           name: RouteNames.instance.spellsList,
           builder: (context, state) => const SpellListView(),
         ),
+        GoRoute(
+          path: RouteNames.instance.features,
+          name: RouteNames.instance.features,
+          builder: (context, state) => const FeaturesView(),
+        ),
+        GoRoute(
+          path: RouteNames.instance.biography,
+          name: RouteNames.instance.biography,
+          builder: (context, state) => const BiblographyView(),
+        ),
+        GoRoute(
+          path: RouteNames.instance.combatInfo,
+          name: RouteNames.instance.combatInfo,
+          builder: (context, state) => const CombatInfoView(),
+        ),
       ]);
 });
