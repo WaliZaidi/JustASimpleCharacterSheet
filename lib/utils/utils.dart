@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import '../models/character_model.dart';
+import '../models/class_model.dart';
 
 class Utils {
   static Utils instance = Utils._();
@@ -79,5 +84,90 @@ class Utils {
       default:
         return 'Unknown';
     }
+  }
+
+  List<Entry> stringToEntries(List<String> text) {
+    return text.map((e) => StringEntry(e)).toList();
+  }
+
+  Feature classFeatureToFeature(ClassFeature classFeature) {
+    final descriptionBuilder = StringBuffer();
+
+    for (final entry in classFeature.entries) {
+      if (entry is StringEntry) {
+        descriptionBuilder.writeln(entry.text);
+      } else if (entry is ObjectEntry) {
+        final prettyJson =
+            const JsonEncoder.withIndent('  ').convert(entry.data);
+        descriptionBuilder.writeln('--- Special Data ---');
+        descriptionBuilder.writeln(prettyJson);
+        descriptionBuilder.writeln('--------------------');
+      }
+    }
+
+    final description = descriptionBuilder.toString().trim();
+
+    final lowerCaseDescription = description.toLowerCase();
+    final bool hasUses = lowerCaseDescription.contains(' per day') ||
+        lowerCaseDescription.contains(' per short rest') ||
+        lowerCaseDescription.contains(' per long rest') ||
+        lowerCaseDescription.contains('number of times equal to') ||
+        (lowerCaseDescription.contains(' use') &&
+            !lowerCaseDescription.contains('can use this'));
+
+    return Feature(
+      name: classFeature.name,
+      description: description,
+      hasUses: hasUses,
+    );
+  }
+
+  /// Converts a simple [Feature] from a character sheet back into a [ClassFeature].
+  ///
+  /// Note: This conversion is "lossy" as structured data from `ObjectEntry`
+  /// cannot be recreated from a simple description string. It also requires
+  /// `source` and `level` context.
+  ClassFeature featureToClassFeature(
+    Feature feature, {
+    required String source,
+    required int level,
+  }) {
+    final List<Entry> entries = feature.description
+        .split('\n')
+        .map((line) => StringEntry(line))
+        .toList();
+
+    return ClassFeature(
+      name: feature.name,
+      source: source,
+      level: level,
+      entries: entries,
+    );
+  }
+
+  List<Feature> classFeatureListToFeatureList(
+      List<ClassFeature> classFeatures) {
+    if (classFeatures.isEmpty) {
+      return [];
+    }
+
+    return classFeatures
+        .map((classFeature) => classFeatureToFeature(classFeature))
+        .toList();
+  }
+
+  List<ClassFeature> featureListToClassFeatureList(
+    List<Feature> features, {
+    required String source,
+    required int level,
+  }) {
+    if (features.isEmpty) {
+      return [];
+    }
+
+    return features
+        .map((feature) =>
+            featureToClassFeature(feature, source: source, level: level))
+        .toList();
   }
 }
