@@ -13,56 +13,53 @@ class Utils {
   Color getLevelColor(int level) {
     switch (level) {
       case 0:
-        return Colors.blueGrey.shade400; // Cantrip: Neutral, utility
+        return Colors.blueGrey.shade400;
       case 1:
-        return Colors.teal.shade400; // ---
+        return Colors.teal.shade400;
       case 2:
-        return Colors.blue.shade400; //  |-- Low-level, cool "learning" colors
+        return Colors.blue.shade400;
       case 3:
-        return Colors.green.shade600; // ---
+        return Colors.green.shade600;
       case 4:
-        return Colors.lime
-            .shade700; //  |-- Mid-level, transitioning to warmer, more potent colors
+        return Colors.lime.shade700;
       case 5:
-        return Colors.amber.shade700; // ---
+        return Colors.amber.shade700;
       case 6:
-        return Colors.orange.shade700; //  |-- High-level, powerful warm colors
+        return Colors.orange.shade700;
       case 7:
-        return Colors.red.shade600; // ---
+        return Colors.red.shade600;
       case 8:
-        return Colors.pink.shade500; // Very high-level, distinct "arcane" color
+        return Colors.pink.shade500;
       case 9:
-        return Colors.deepPurple.shade500; // Epic-level, ultimate magical power
+        return Colors.deepPurple.shade500;
       default:
-        return Colors.grey.shade600; // Fallback for any unexpected values
+        return Colors.grey.shade600;
     }
   }
 
   Color getSchoolColor(String schoolInitial) {
     switch (schoolInitial.toUpperCase()) {
-      case 'A': // Abjuration
+      case 'A':
         return Colors.teal.shade400;
-      case 'C': // Conjuration
+      case 'C':
         return Colors.orange.shade700;
-      case 'D': // Divination
+      case 'D':
         return Colors.lightBlue.shade500;
-      case 'E': // Enchantment
+      case 'E':
         return Colors.deepPurple.shade300;
-      case 'V': // Evocation (V is used in some data sources)
+      case 'V':
         return Colors.red.shade700;
-      case 'I': // Illusion
+      case 'I':
         return Colors.indigo.shade400;
-      case 'N': // Necromancy
-        return Colors
-            .grey.shade800; // A very dark grey, distinct from the background
-      case 'T': // Transmutation
+      case 'N':
+        return Colors.grey.shade800;
+      case 'T':
         return Colors.brown.shade400;
       default:
         return Colors.grey.shade700;
     }
   }
 
-// Gets the full school name from its initial.
   String getSchoolName(String schoolInitial) {
     switch (schoolInitial.toUpperCase()) {
       case 'E':
@@ -122,11 +119,6 @@ class Utils {
     );
   }
 
-  /// Converts a simple [Feature] from a character sheet back into a [ClassFeature].
-  ///
-  /// Note: This conversion is "lossy" as structured data from `ObjectEntry`
-  /// cannot be recreated from a simple description string. It also requires
-  /// `source` and `level` context.
   ClassFeature featureToClassFeature(
     Feature feature, {
     required String source,

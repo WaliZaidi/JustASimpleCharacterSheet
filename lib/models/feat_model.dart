@@ -9,12 +9,11 @@ class Feat {
   final int? page;
   final List<Entry> entries;
   final List<FeatPrerequisite>? prerequisite;
-  final List<Map<String, dynamic>>?
-      ability; // Flexible for {str: 1} or {choose: ...}
+  final List<Map<String, dynamic>>? ability;
   final List<Map<String, dynamic>>? armorProficiencies;
   final List<Map<String, dynamic>>? weaponProficiencies;
   final List<Map<String, dynamic>>? toolProficiencies;
-  final List<ImageInfo>? images; // Enriched from fluff file
+  final List<ImageInfo>? images;
 
   Feat({
     required this.name,

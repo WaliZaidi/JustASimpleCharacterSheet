@@ -29,13 +29,11 @@ class SpellListCard extends StatelessWidget {
         padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
         child: Row(
           children: <Widget>[
-            // Level Pill
             InfoPill(
               text: spell.level == 0 ? 'Cantrip' : 'Level ${spell.level}',
               color: Utils.instance.getLevelColor(spell.level),
             ),
             const SizedBox(width: 8.0),
-            // School Pill
             InfoPill(
               text: Utils.instance.getSchoolName(spell.school),
               color: Utils.instance.getSchoolColor(spell.school),

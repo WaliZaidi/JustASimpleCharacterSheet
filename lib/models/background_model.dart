@@ -1,4 +1,4 @@
-import 'shared_models.dart'; // Import the shared models
+import 'shared_models.dart';
 import 'dart:convert';
 
 Background backgroundFromJson(String str) =>
@@ -14,12 +14,11 @@ class Background {
   final List<Entry> entries;
   final List<AdditionalSpells>? additionalSpells;
 
-  // These fields have highly variable structures, so using a flexible type is best.
   final List<Map<String, dynamic>>? skillProficiencies;
   final List<Map<String, dynamic>>? languageProficiencies;
   final List<Map<String, dynamic>>? toolProficiencies;
   final List<Map<String, dynamic>>? startingEquipment;
-  final List<ImageInfo>? images; // Enriched from fluff file
+  final List<ImageInfo>? images;
 
   Background({
     required this.name,

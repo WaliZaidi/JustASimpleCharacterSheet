@@ -1,5 +1,3 @@
-// --- Universal Parsing Helper ---
-/// Safely parses a value that might be a MongoDB `$numberInt` object or a standard int.
 int? parseInt(dynamic jsonValue) {
   if (jsonValue == null) return null;
   if (jsonValue is int) return jsonValue;
@@ -10,8 +8,6 @@ int? parseInt(dynamic jsonValue) {
   return null;
 }
 
-// --- Polymorphic "Entry" Class for Text Blocks ---
-// Handles entries that can be a simple string or a complex JSON object (like a list or table).
 sealed class Entry {
   static List<Entry> fromJsonList(List<dynamic>? jsonList) {
     if (jsonList == null) return [];
@@ -32,8 +28,6 @@ class ObjectEntry extends Entry {
   final Map<String, dynamic> data;
   ObjectEntry(this.data);
 }
-
-// --- Common Reusable Models ---
 
 class OtherSource {
   final String source;

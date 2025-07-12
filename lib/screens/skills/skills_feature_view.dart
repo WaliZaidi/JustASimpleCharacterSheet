@@ -1,4 +1,3 @@
-// lib/screens/skills_features_page.dart
 import 'package:flutter/material.dart';
 
 import '../../models/character_model.dart';
@@ -12,13 +11,12 @@ class SkillsFeaturesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // Sort skills alphabetically for easy lookup
+
     character.skills.sort((a, b) => a.name.compareTo(b.name));
 
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
-        // Passive Perception
         Card(
           color: theme.cardColor,
           child: Padding(
@@ -41,8 +39,6 @@ class SkillsFeaturesPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-
-        // Skills
         Text("Skills", style: theme.textTheme.headlineSmall),
         const SizedBox(height: 10),
         Card(
@@ -57,8 +53,6 @@ class SkillsFeaturesPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 24),
-
-        // Features
         Text("Features & Traits", style: theme.textTheme.headlineSmall),
         const SizedBox(height: 10),
         ...character.features.map((feature) => Card(

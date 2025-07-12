@@ -1,4 +1,3 @@
-// lib/screens/profile_page.dart
 import 'package:flutter/material.dart';
 
 import '../../models/character_model.dart';
@@ -55,7 +54,6 @@ class ProfilePage extends StatelessWidget {
               ),
             )),
         const SizedBox(height: 20),
-        // Placeholder for Inventory
         Card(
             color: theme.cardColor,
             child: Padding(

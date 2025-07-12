@@ -9,8 +9,6 @@ class CharacterService {
   List<DndClass> characterList = [];
 
   Future<void> initialiseDebugCharacter() async {
-    // --- SORCERER (Level 3) ---
-
     final sorcererFeatures = [
       ClassFeature(
         name: 'Spellcasting',
@@ -93,7 +91,6 @@ class CharacterService {
       subclassTitle: 'Sorcerous Origin',
       subclasses: [draconicBloodline],
       features: sorcererFeatures,
-      // --- Simplified/Default values below ---
       otherSources: [],
       cantripProgression: [
         4,
@@ -120,8 +117,6 @@ class CharacterService {
       optionalfeatureProgression: [],
       classTableGroups: [],
     );
-
-    // --- WARLOCK (Level 1) ---
 
     final warlockFeatures = [
       ClassFeature(
@@ -188,7 +183,6 @@ class CharacterService {
       subclassTitle: 'Otherworldly Patron',
       subclasses: [theFiend],
       features: warlockFeatures,
-      // --- Simplified/Default values below ---
       otherSources: [],
       cantripProgression: [
         2,

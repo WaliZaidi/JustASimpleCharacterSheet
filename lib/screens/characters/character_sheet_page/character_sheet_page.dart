@@ -6,312 +6,6 @@ import '../../../services/state_service.dart';
 import 'character_sheet_state.dart';
 import 'character_sheet_view_vm.dart';
 
-// class CharacterSheetScreen extends ConsumerWidget {
-//   const CharacterSheetScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     // For demonstration purposes without a real provider:
-
-//     // In a real app, you would use this line instead:
-//     final controller = ref.watch(StateService.characterListProvider);
-//     controller.build();
-
-//     return DefaultTabController(
-//       length: 3,
-//       child: Scaffold(
-//         body: CustomScrollView(
-//           slivers: [
-//             SliverAppBar(
-//               expandedHeight: 250.0,
-//               floating: false,
-//               pinned: true,
-//               flexibleSpace: FlexibleSpaceBar(
-//                 title: Text(
-//                   controller.character.characterName,
-//                   style: const TextStyle(shadows: [Shadow(blurRadius: 8)]),
-//                 ),
-//                 background: _CharacterHeader(controller: controller.character),
-//               ),
-//               bottom: const TabBar(
-//                 tabs: [
-//                   Tab(
-//                       icon: Icon(Icons.shield_outlined),
-//                       text: "Combat & Skills"),
-//                   Tab(icon: Icon(Icons.star_outline), text: "Features"),
-//                   Tab(icon: Icon(Icons.book_outlined), text: "Biography"),
-//                 ],
-//               ),
-//             ),
-//             SliverFillRemaining(
-//               child: TabBarView(
-//                 children: [
-//                   _CoreTab(controller: controller.character),
-//                   _FeaturesTab(controller: controller.character),
-//                   _BiographyTab(controller: controller.character),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// // --- HEADER WIDGET ---
-// class _CharacterHeader extends StatelessWidget {
-//   final CharacterSheetState controller;
-//   const _CharacterHeader({required this.controller});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Stack(
-//       fit: StackFit.expand,
-//       children: [
-//         // Image.asset(
-//         //   controller.imagePath,
-//         //   fit: BoxFit.cover,
-//         //   color: Colors.black.withOpacity(0.4),
-//         //   colorBlendMode: BlendMode.darken,
-//         // ),
-//         Positioned(
-//           bottom: 70,
-//           left: 16,
-//           right: 16,
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 controller.classLevelDisplay,
-//                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-//                     color: Colors.white,
-//                     shadows: [const Shadow(blurRadius: 4)]),
-//               ),
-//               Text(
-//                 '${controller.race} • ${controller.background}',
-//                 style: Theme.of(context)
-//                     .textTheme
-//                     .titleMedium
-//                     ?.copyWith(color: Colors.white70),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-// // --- TAB WIDGETS ---
-// class _CoreTab extends StatelessWidget {
-//   final CharacterSheetState controller;
-//   const _CoreTab({required this.controller});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView(
-//       padding: const EdgeInsets.all(16.0),
-//       children: [
-//         // Main Stats (HP, AC, etc.)
-//         Wrap(
-//           alignment: WrapAlignment.spaceEvenly,
-//           runSpacing: 16,
-//           children: [
-//             _StatDisplay(
-//                 label: "Armor Class", value: controller.armorClass.toString()),
-//             _StatDisplay(
-//                 label: "Hit Points", value: controller.hitPoints.toString()),
-//             _StatDisplay(label: "Speed", value: "${controller.speed} ft."),
-//             _StatDisplay(
-//                 label: "Initiative", value: "+${controller.initiative}"),
-//             _StatDisplay(
-//                 label: "Proficiency", value: "+${controller.proficiencyBonus}"),
-//           ],
-//         ),
-//         const Divider(height: 32),
-//         // Ability Scores
-//         GridView.builder(
-//           shrinkWrap: true,
-//           physics: const NeverScrollableScrollPhysics(),
-//           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//             crossAxisCount: 3,
-//             childAspectRatio: 0.9,
-//             mainAxisSpacing: 8,
-//             crossAxisSpacing: 8,
-//           ),
-//           itemCount: controller.abilityScores.length,
-//           itemBuilder: (context, index) {
-//             final ability = controller.abilityScores.keys.elementAt(index);
-//             return _AbilityScoreCard(
-//               ability: ability,
-//               score: controller.abilityScores[ability]!,
-//               modifier: controller.abilityModifiers[ability]!,
-//             );
-//           },
-//         ),
-//         const Divider(height: 32),
-//         // Skills
-//         Text("Skills", style: Theme.of(context).textTheme.titleLarge),
-//         const SizedBox(height: 8),
-//         for (var entry in controller.skillBonuses.entries)
-//           _SkillRow(skillName: entry.key, bonus: entry.value)
-//       ],
-//     );
-//   }
-// }
-
-// class _FeaturesTab extends StatelessWidget {
-//   final CharacterSheetState controller;
-//   const _FeaturesTab({required this.controller});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//       padding: const EdgeInsets.all(16.0),
-//       itemCount: controller.features.length,
-//       itemBuilder: (context, index) {
-//         final feature = controller.features[index];
-//         return Card(
-//           margin: const EdgeInsets.only(bottom: 12),
-//           child: ExpansionTile(
-//             title: Text(feature.name,
-//                 style: const TextStyle(fontWeight: FontWeight.bold)),
-//             subtitle: Text('Level ${feature.level} • ${feature.source}'),
-//             children: feature.entries.map((entry) {
-//               if (entry is StringEntry) {
-//                 return Padding(
-//                   padding: const EdgeInsets.symmetric(
-//                       horizontal: 16.0, vertical: 4.0),
-//                   child: Text(entry.text,
-//                       style: Theme.of(context).textTheme.bodyMedium),
-//                 );
-//               }
-//               return const SizedBox.shrink(); // Handle ObjectEntry if needed
-//             }).toList(),
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
-
-// class _BiographyTab extends StatelessWidget {
-//   final CharacterSheetState controller;
-//   const _BiographyTab({required this.controller});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView(
-//       padding: const EdgeInsets.all(16.0),
-//       children: [
-//         _BioCard(
-//             title: "Personality Traits", text: controller.personalityTraits),
-//         _BioCard(title: "Ideals", text: controller.ideals),
-//         _BioCard(title: "Bonds", text: controller.bonds),
-//         _BioCard(title: "Flaws", text: controller.flaws),
-//       ],
-//     );
-//   }
-// }
-
-// // --- REUSABLE UI COMPONENTS ---
-// class _StatDisplay extends StatelessWidget {
-//   final String label;
-//   final String value;
-//   const _StatDisplay({required this.label, required this.value});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SizedBox(
-//       width: 100,
-//       child: Column(
-//         children: [
-//           Text(value, style: Theme.of(context).textTheme.headlineMedium),
-//           Text(label, style: Theme.of(context).textTheme.bodySmall),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class _AbilityScoreCard extends StatelessWidget {
-//   final String ability;
-//   final int score;
-//   final int modifier;
-//   const _AbilityScoreCard(
-//       {required this.ability, required this.score, required this.modifier});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Text(ability.substring(0, 3).toUpperCase(),
-//               style: Theme.of(context).textTheme.titleMedium),
-//           const SizedBox(height: 4),
-//           Text(modifier >= 0 ? '+$modifier' : '$modifier',
-//               style: Theme.of(context).textTheme.headlineSmall),
-//           const SizedBox(height: 4),
-//           Chip(
-//             label: Text(score.toString()),
-//             visualDensity: VisualDensity.compact,
-//             padding: EdgeInsets.zero,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class _SkillRow extends StatelessWidget {
-//   final String skillName;
-//   final int bonus;
-//   const _SkillRow({required this.skillName, required this.bonus});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 4.0),
-//       child: Row(
-//         children: [
-//           Text(bonus >= 0 ? '+$bonus' : '$bonus',
-//               style:
-//                   const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-//           const SizedBox(width: 16),
-//           Text(skillName),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// class _BioCard extends StatelessWidget {
-//   final String title;
-//   final String text;
-//   const _BioCard({required this.title, required this.text});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       margin: const EdgeInsets.only(bottom: 16),
-//       child: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(title, style: Theme.of(context).textTheme.titleLarge),
-//             const Divider(height: 16),
-//             Text(text, style: Theme.of(context).textTheme.bodyMedium),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// --- Constants for Color Coding ---
 const Map<String, Color> abilityColors = {
   'Strength': Colors.redAccent,
   'Dexterity': Colors.greenAccent,
@@ -357,16 +51,14 @@ class _CharacterSheetScreenState extends ConsumerState<CharacterSheetScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    Navigator.of(context).pop(); // Close the drawer
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    // In a real app, you would use this line instead:
     final controller = ref.watch(StateService.characterListProvider);
-    // For demonstration purposes, we create an instance:
 
-    final character = controller.build(); // Simulates fetching the data
+    final character = controller.build();
 
     final List<Widget> pages = [
       _CoreTab(controller: character, viewModel: controller),
@@ -473,7 +165,6 @@ class _CharacterSheetScreenState extends ConsumerState<CharacterSheetScreen> {
   }
 }
 
-// --- HEADER WIDGET (Unchanged) ---
 class _CharacterHeader extends StatelessWidget {
   final CharacterSheetState controller;
   const _CharacterHeader({required this.controller});
@@ -483,8 +174,7 @@ class _CharacterHeader extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Image.asset( ... ) // Your image here
-        Container(color: Colors.blueGrey[800]), // Placeholder background
+        Container(color: Colors.blueGrey[800]),
         Positioned(
           bottom: 70,
           left: 16,
@@ -513,11 +203,9 @@ class _CharacterHeader extends StatelessWidget {
   }
 }
 
-// --- TAB WIDGETS (Updated) ---
-
 class _CoreTab extends StatefulWidget {
   final CharacterSheetState controller;
-  final CharacterSheetViewModel viewModel; // To call update methods
+  final CharacterSheetViewModel viewModel;
   const _CoreTab({required this.controller, required this.viewModel});
 
   @override
@@ -534,7 +222,6 @@ class _CoreTabState extends State<_CoreTab> {
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
       children: [
-        // Main Stats (HP, AC, etc.)
         Wrap(
           alignment: WrapAlignment.spaceEvenly,
           runSpacing: 16,
@@ -570,7 +257,6 @@ class _CoreTabState extends State<_CoreTab> {
           ],
         ),
         const Divider(height: 32),
-        // Ability Scores
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -593,7 +279,6 @@ class _CoreTabState extends State<_CoreTab> {
           },
         ),
         const Divider(height: 32),
-        // Skills
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -706,8 +391,6 @@ class _BiographyTabState extends ConsumerState<_BiographyTab> {
   }
 }
 
-// --- REUSABLE UI COMPONENTS (Updated) ---
-
 class _StatDisplay extends StatelessWidget {
   final String label;
   final String value;
@@ -726,7 +409,7 @@ class _StatDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 120, // Increased width for edit buttons
+      width: 120,
       child: Column(
         children: [
           if (isEditing)
@@ -847,8 +530,6 @@ class _BioCard extends StatelessWidget {
   }
 }
 
-// --- DIALOGS FOR ADDING NEW ITEMS ---
-
 void _showAddFeatureDialog(
     BuildContext context, CharacterSheetViewModel viewModel) {
   final nameController = TextEditingController();
@@ -936,7 +617,6 @@ void _showAddBioDialog(
               child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () {
-              // viewModel.addBioEntry(...)
               Navigator.pop(context);
             },
             child: const Text('Add'),

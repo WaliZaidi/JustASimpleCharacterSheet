@@ -6,19 +6,16 @@ import 'package:http/http.dart' as http;
 import '../../models/background_model.dart';
 
 class BackgroundService {
-  // Singleton pattern setup
   static final BackgroundService _instance = BackgroundService._internal();
   factory BackgroundService() => _instance;
   BackgroundService._internal();
 
-  // Private list to hold data and a public getter
   List<Background> _backgrounds = [];
   List<Background> get backgrounds => List.unmodifiable(_backgrounds);
 
   bool _isLoaded = false;
   bool get isLoaded => _isLoaded;
 
-  // Fetches data from mongoDB
   Future<void> loadBackgrounds() async {
     if (_isLoaded) return;
 

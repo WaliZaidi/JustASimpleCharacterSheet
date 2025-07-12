@@ -144,7 +144,6 @@ class _FilterSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -170,7 +169,6 @@ class _FilterSheet extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 16),
-          // Filter for School
           FilterDropdown<String>(
             label: 'School',
             value: controller.activeFilters['school'],

@@ -1,5 +1,3 @@
-// lib/models/character_model.dart
-
 class Character {
   final String name;
   final String race;
@@ -90,7 +88,6 @@ class Feature {
       {required this.name, required this.description, this.hasUses = false});
 }
 
-// --- DATA FROM THE IMAGE ---
 final mahrMudborn = Character(
   name: "Mahr Mudborn",
   race: "Hexblood",
@@ -123,7 +120,6 @@ final mahrMudborn = Character(
     Skill(name: "Perception", ability: "WIS", bonus: 4, isProficient: true),
     Skill(name: "Deception", ability: "CHA", bonus: 6, isProficient: true),
     Skill(name: "Persuasion", ability: "CHA", bonus: 6, isProficient: true),
-    // Add other skills with their base modifiers for completeness
     Skill(name: "Athletics", ability: "STR", bonus: -1, isProficient: false),
     Skill(
         name: "Sleight of Hand", ability: "DEX", bonus: 3, isProficient: false),

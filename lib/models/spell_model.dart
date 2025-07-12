@@ -1,20 +1,13 @@
 //! NYAN
 import 'dart:convert';
 
-// --- Top-Level Parsing Functions ---
-
-/// Parses a list of spell documents from a direct JSON array `[...]`.
-/// This is the correct format for your API response.
 List<Spell> spellListFromJson(String str) => List<Spell>.from(
     json.decode(str).map((x) => Spell.fromJson(x as Map<String, dynamic>)));
 
-/// Parses a single spell document.
 Spell spellFromJson(String str) => Spell.fromJson(json.decode(str));
 
-// --- Main Spell Class ---
-
 class Spell {
-  final String? id; // Nullable to be robust
+  final String? id;
   final String name;
   final String source;
   final int page;
@@ -109,9 +102,6 @@ class Spell {
   }
 }
 
-// --- Helper Functions for Parsing ---
-
-/// Parses the 'classes' field, which can have inconsistent JSON structures.
 List<SpellClass>? _parseSpellClasses(dynamic rawJson) {
   if (rawJson == null) {
     return null;
@@ -166,7 +156,6 @@ List<Entry> _parseEntries(List<dynamic>? entriesList) {
   }).toList();
 }
 
-// --- Sealed Class for Polymorphic "entries" Field ---
 sealed class Entry {}
 
 class StringEntry extends Entry {
@@ -216,8 +205,6 @@ class MapEntry extends Entry {
   MapEntry(this.data);
 }
 
-// --- Sub-Models for Nested Objects ---
-
 class Components {
   final bool? v;
   final bool? s;
@@ -250,13 +237,10 @@ class MaterialComponent {
     bool finalConsumeValue;
 
     if (consumeValue is bool) {
-      // If it's already a boolean, use it directly.
       finalConsumeValue = consumeValue;
     } else if (consumeValue is String) {
-      // If it's a string, check if it's 'true'.
       finalConsumeValue = consumeValue.toLowerCase() == 'true';
     } else {
-      // If it's null or another type, default to true as in your original code.
       finalConsumeValue = true;
     }
 
@@ -422,7 +406,7 @@ extension SpellToJson on Spell {
 
 dynamic entryToJson(Entry entry) {
   if (entry is StringEntry) {
-    return entry.text; // Now valid to return a String
+    return entry.text;
   } else if (entry is ListEntry) {
     return {
       "type": "list",

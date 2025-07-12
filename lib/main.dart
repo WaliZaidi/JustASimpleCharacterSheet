@@ -9,19 +9,10 @@ import 'services/api_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await _loadEnv();
   await ApiService.instance.initialiseAPI();
 
   runApp(const ProviderScope(child: JustASimpleCharacterSheet()));
 }
-
-// Future<void> _loadEnv() async {
-//   try {
-//     await dotenv.load();
-//   } catch (e) {
-//     debugPrint('Error Loading Environment Variables: $e');
-//   }
-// }
 
 class JustASimpleCharacterSheet extends ConsumerWidget {
   const JustASimpleCharacterSheet({super.key});
@@ -41,7 +32,6 @@ class JustASimpleCharacterSheet extends ConsumerWidget {
     );
   }
 
-  /// Function to apply responsive constraints
   Widget _applyResponsiveConstraints(BuildContext context, Widget? child) {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -53,7 +43,6 @@ class JustASimpleCharacterSheet extends ConsumerWidget {
             ),
           );
         } else {
-          // Full width for mobile
           return child!;
         }
       },

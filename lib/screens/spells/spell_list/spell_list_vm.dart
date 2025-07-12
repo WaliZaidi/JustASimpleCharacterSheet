@@ -54,13 +54,12 @@ class SpellListViewModel extends BaseViewModel {
         bool passesSchoolFilter = !_activeFilters.containsKey('school') ||
             spell.school == _activeFilters['school'];
 
-        bool passesClassFilter = true; // Default to true
+        bool passesClassFilter = true;
         if (_activeFilters.containsKey('class')) {
           passesClassFilter = spell.classes?.any(
                   (spellClass) => spellClass.name == _activeFilters['class']) ??
               false;
         }
-        // -------------------------------------
 
         return passesLevelFilter && passesSchoolFilter && passesClassFilter;
       }).toList();
@@ -124,7 +123,7 @@ class SpellListViewModel extends BaseViewModel {
     } catch (e) {
       _error =
           'Failed to load spells. Please check your connection and try again.';
-      _allSpells = []; // Ensure list is empty on error
+      _allSpells = [];
     } finally {
       setLoading(false);
     }

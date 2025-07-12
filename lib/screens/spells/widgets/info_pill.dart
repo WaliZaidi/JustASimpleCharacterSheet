@@ -15,9 +15,7 @@ class InfoPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       decoration: BoxDecoration(
-        // The background of the pill is now transparent.
         color: Colors.transparent,
-        // The border uses the color passed into the widget.
         border: Border.all(
           color: color,
           width: 1.5,

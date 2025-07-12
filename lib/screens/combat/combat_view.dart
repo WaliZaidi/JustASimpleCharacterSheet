@@ -1,4 +1,3 @@
-// lib/screens/combat_page.dart
 import 'package:flutter/material.dart';
 
 import '../../models/character_model.dart';
@@ -17,7 +16,6 @@ class CombatPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Info
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -36,8 +34,6 @@ class CombatPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-
-          // HP Card
           Card(
             color: theme.cardColor,
             child: Padding(
@@ -86,8 +82,6 @@ class CombatPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-
-          // Ability Scores
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -103,8 +97,6 @@ class CombatPage extends StatelessWidget {
             },
           ),
           const SizedBox(height: 20),
-
-          // Weapons
           Text("Weapons & Attacks", style: theme.textTheme.headlineSmall),
           const SizedBox(height: 10),
           ...character.weapons.map((weapon) => Card(
